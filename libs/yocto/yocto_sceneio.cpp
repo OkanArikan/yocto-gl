@@ -138,13 +138,13 @@ vector<string> list_directory(const string& filename) {
 // Create a directory and all missing parent directories if needed
 bool make_directory(const string& dirname, string& error) {
   if (path_exists(dirname)) return true;
-  try {
+  //try {
     create_directories(make_path(dirname));
     return true;
-  } catch (...) {
-    error = dirname + ": cannot create directory";
-    return false;
-  }
+  //} catch (...) {
+  //  error = dirname + ": cannot create directory";
+  //  return false;
+  //}
 }
 
 // Get the current directory
@@ -1090,7 +1090,7 @@ bool save_shape(const string& filename, const scene_shape& shape, string& error,
                  "," + std::to_string(value.z) + "," + std::to_string(value.w) +
                  "},\n";
         } else {
-          throw std::invalid_argument{"cannot print this"};
+            assert(false); //throw std::invalid_argument{"cannot print this"};
         }
       }
       str += "};\n\n";
@@ -1257,7 +1257,7 @@ bool save_fvshape(const string& filename, const scene_fvshape& shape,
                  "," + std::to_string(value.z) + "," + std::to_string(value.w) +
                  "},\n";
         } else {
-          throw std::invalid_argument{"cannot print this"};
+            assert(false); //throw std::invalid_argument{"cannot print this"};
         }
       }
       str += "};\n\n";
@@ -1504,13 +1504,13 @@ bool make_fvshape_preset(
     shape.texcoords = shape_.texcoords;
   };
   auto set_triangles = [&](scene_shape&& shape) {
-    throw std::invalid_argument{"bad shape type"};
+      assert(false); //throw std::invalid_argument{"bad shape type"};
   };
   auto set_lines = [&](scene_shape&& shape) {
-    throw std::invalid_argument{"bad shape type"};
+      assert(false); //throw std::invalid_argument{"bad shape type"};
   };
   auto set_points = [&](scene_shape&& shape) {
-    throw std::invalid_argument{"bad shape type"};
+      assert(false); //throw std::invalid_argument{"bad shape type"};
   };
   auto set_fvquads = [&](scene_fvshape&& shape_) {
     shape.quadspos      = shape_.quadspos;
@@ -2572,12 +2572,12 @@ using std::array;
   };
   auto text = ""s;
   if (!load_text(filename, text, error)) return false;
-  try {
+  //try {
     json = njson::parse(text);
     return true;
-  } catch (std::exception&) {
-    return parse_error();
-  }
+  //} catch (std::exception&) {
+  //  return parse_error();
+  //}
 }
 
 [[maybe_unused]] static bool save_json(
@@ -2622,8 +2622,9 @@ inline void from_json(const njson& j, scene_material_type& value) {
   auto values = j.get<string>();
   auto pos    = std::find(
       scene_material_names.begin(), scene_material_names.end(), values);
-  if (pos == scene_material_names.end())
-    throw std::invalid_argument{"unknown value"};
+    if (pos == scene_material_names.end()) {
+        assert(false); //throw std::invalid_argument{"unknown value"};
+    }
   value = (scene_material_type)(pos - scene_material_names.begin());
 }
 
@@ -2672,12 +2673,12 @@ static bool load_json_scene(const string& filename, scene_model& scene,
 
   // parse json value
   auto get_value = [](const njson& js, auto& value) -> bool {
-    try {
+    //try {
       value = js;
       return true;
-    } catch (...) {
-      return false;
-    }
+    //} catch (...) {
+    //  return false;
+    //}
   };
 
   // parse json reference
@@ -3152,7 +3153,7 @@ static bool save_json_scene(const string& filename, const scene_model& scene,
     string& error, bool noparallel) {
   auto conversion_error = [filename, &error](const string& message) {
     // should never happen
-    throw std::runtime_error{"programmer error"};
+      assert(false); //throw std::runtime_error{"programmer error"};
     error = filename + ": conversion error (" + message + ")";
     return false;
   };
@@ -3809,7 +3810,7 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
   // parse buffers
   auto buffers_paths = vector<string>{};
   auto buffers       = vector<vector<byte>>();
-  try {
+  //try {
     if (gltf.contains("buffers")) {
       for (auto& gbuffer : gltf.at("buffers")) {
         if (!gbuffer.contains("uri")) return parse_error();
@@ -3817,9 +3818,9 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
         buffers.emplace_back();
       }
     }
-  } catch (...) {
-    return parse_error();
-  }
+  //} catch (...) {
+  //  return parse_error();
+  //}
 
   // dirname
   auto dirname = path_dirname(filename);
@@ -3853,17 +3854,17 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
 
   // convert asset
   if (gltf.contains("asset")) {
-    try {
+    //try {
       scene.copyright = gltf.value("copyright", ""s);
-    } catch (...) {
-      return parse_error();
-    }
+    //} catch (...) {
+    //  return parse_error();
+    //}
   }
 
   // convert cameras
   auto cameras = vector<scene_camera>{};
   if (gltf.contains("cameras")) {
-    try {
+    //try {
       for (auto& gcamera : gltf.at("cameras")) {
         auto& camera = cameras.emplace_back();
         auto  type   = gcamera.value("type", "perspective");
@@ -3890,9 +3891,9 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
           return parse_error();
         }
       }
-    } catch (...) {
-      return parse_error();
-    }
+    //} catch (...) {
+    //  return parse_error();
+    //}
   }
 
   // convert color textures
@@ -3919,19 +3920,19 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
   // convert textures
   auto texture_paths = vector<string>{};
   if (gltf.contains("images")) {
-    try {
+    //try {
       for (auto& gimage : gltf.at("images")) {
         scene.textures.emplace_back();
         texture_paths.push_back(replace(gimage.value("uri", ""), "%20", " "));
       }
-    } catch (...) {
-      return parse_error();
-    }
+    //} catch (...) {
+    //  return parse_error();
+    //}
   }
 
   // convert materials
   if (gltf.contains("materials")) {
-    try {
+    //try {
       for (auto& gmaterial : gltf.at("materials")) {
         auto& material    = scene.materials.emplace_back();
         material.type     = scene_material_type::gltfpbr;
@@ -3962,15 +3963,15 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
           }
         }
       }
-    } catch (...) {
-      return parse_error();
-    }
+    //} catch (...) {
+    //  return parse_error();
+    //}
   }
 
   // convert meshes
   auto mesh_primitives = vector<vector<sceneio_instance>>{};
   if (gltf.contains("meshes")) {
-    try {
+    //try {
       auto type_components = unordered_map<string, int>{
           {"SCALAR", 1}, {"VEC2", 2}, {"VEC3", 3}, {"VEC4", 4}};
       for (auto& gmesh : gltf.at("meshes")) {
@@ -3985,8 +3986,9 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
           for (auto& [gname, gattribute] :
               gprimitive.at("attributes").items()) {
             auto& gaccessor = gltf.at("accessors").at(gattribute.get<int>());
-            if (gaccessor.contains("sparse"))
-              throw std::invalid_argument{"sparse accessor"};
+              if (gaccessor.contains("sparse")) {
+                  assert(false); //throw std::invalid_argument{"sparse accessor"};
+              }
             auto& gview =
                 gltf.at("bufferViews").at(gaccessor.value("bufferView", -1));
             auto& buffer      = buffers.at(gview.value("buffer", 0));
@@ -3995,23 +3997,27 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
             auto  count       = gaccessor.value("count", (size_t)0);
             auto  data        = (float*)nullptr;
             if (gname == "POSITION") {
-              if (components != 3)
-                throw std::invalid_argument{"invalid accessor"};
+                if (components != 3) {
+                    assert(false); //throw std::invalid_argument{"invalid accessor"};
+                }
               shape.positions.resize(count);
               data = (float*)shape.positions.data();
             } else if (gname == "NORMAL") {
-              if (components != 3)
-                throw std::invalid_argument{"invalid accessor"};
+                if (components != 3) {
+                    assert(false); //throw std::invalid_argument{"invalid accessor"};
+                }
               shape.normals.resize(count);
               data = (float*)shape.normals.data();
             } else if (gname == "TEXCOORD" || gname == "TEXCOORD_0") {
-              if (components != 2)
-                throw std::invalid_argument{"invalid accessor"};
+                if (components != 2) {
+                    assert(false); //throw std::invalid_argument{"invalid accessor"};
+                }
               shape.texcoords.resize(count);
               data = (float*)shape.texcoords.data();
             } else if (gname == "COLOR" || gname == "COLOR_0") {
-              if (components != 3 && components != 4)
-                throw std::invalid_argument{"invalid accessor"};
+                if (components != 3 && components != 4) {
+                    assert(false); //throw std::invalid_argument{"invalid accessor"};
+                }
               shape.colors.resize(count);
               data = (float*)shape.colors.data();
               if (components == 3) {
@@ -4019,13 +4025,15 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
                 for (auto& c : shape.colors) c.w = 1;
               }
             } else if (gname == "TANGENT") {
-              if (components != 4)
-                throw std::invalid_argument{"invalid accessor"};
+                if (components != 4) {
+                    assert(false); //throw std::invalid_argument{"invalid accessor"};
+                }
               shape.tangents.resize(count);
               data = (float*)shape.tangents.data();
             } else if (gname == "RADIUS") {
-              if (components != 1)
-                throw std::invalid_argument{"invalid accessor"};
+                if (components != 1) {
+                    assert(false); //throw std::invalid_argument{"invalid accessor"};
+                }
               shape.radius.resize(count);
               data = (float*)shape.radius.data();
             } else {
@@ -4063,7 +4071,7 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
                 }
               }
             } else {
-              throw std::invalid_argument{"invalid accessor"};
+                assert(false); //throw std::invalid_argument{"invalid accessor"};
             }
             // fixes
             if (gname == "TANGENT") {
@@ -4111,8 +4119,9 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
             auto& gview =
                 gltf.at("bufferViews").at(gaccessor.value("bufferView", -1));
             auto& buffer = buffers.at(gview.value("buffer", 0));
-            if (gaccessor.value("type", "") != "SCALAR")
-              throw std::invalid_argument{"invalid accessor"};
+              if (gaccessor.value("type", "") != "SCALAR") {
+                  assert(false); //throw std::invalid_argument{"invalid accessor"};
+              }
             auto count   = gaccessor.value("count", (size_t)0);
             auto indices = vector<int>(count);
             // convert values
@@ -4137,7 +4146,7 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
                 indices[idx] = (int)*(uint*)current;
               }
             } else {
-              throw std::invalid_argument{"invalid accessor"};
+                assert(false); //throw std::invalid_argument{"invalid accessor"};
             }
             if (mode == 4) {  // triangles
               shape.triangles.resize(indices.size() / 3);
@@ -4182,14 +4191,14 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
           }
         }
       }
-    } catch (...) {
-      return parse_error();
-    }
+    //} catch (...) {
+    //  return parse_error();
+    //}
   }
 
   // convert nodes
   if (gltf.contains("nodes")) {
-    try {
+    //try {
       auto parents = vector<int>(gltf.at("nodes").size(), -1);
       auto lxforms = vector<frame3f>(gltf.at("nodes").size(), identity3x4f);
       auto node_id = 0;
@@ -4245,9 +4254,9 @@ static bool load_gltf_scene(const string& filename, scene_model& scene,
         }
         node_id++;
       }
-    } catch (...) {
-      return parse_error();
-    }
+    //} catch (...) {
+    //  return parse_error();
+    //}
   }
 
   if (noparallel) {

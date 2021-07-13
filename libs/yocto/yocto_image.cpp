@@ -87,8 +87,9 @@ color_image convert_image(const color_image& image, bool linear) {
   return result;
 }
 void convert_image(color_image& result, const color_image& image) {
-  if (image.width != result.width || image.height != result.height)
-    throw std::invalid_argument{"image have to be the same size"};
+    if (image.width != result.width || image.height != result.height) {
+        assert(false); //throw std::invalid_argument{"image have to be the same size"};
+    }
   if (image.linear == result.linear) {
     result.pixels = image.pixels;
   } else {
@@ -159,9 +160,12 @@ color_image tonemap_image(
 // Apply tone mapping. If the input image is an ldr, does nothing.
 void tonemap_image(color_image& result, const color_image& image,
     float exposure, bool filmic) {
-  if (image.width != result.width || image.height != result.height)
-    throw std::invalid_argument{"image should be the same size"};
-  if (result.linear) throw std::invalid_argument{"ldr expected"};
+    if (image.width != result.width || image.height != result.height) {
+        assert(false); //throw std::invalid_argument{"image should be the same size"};
+    }
+    if (result.linear) {
+        assert(false); //throw std::invalid_argument{"ldr expected"};
+    }
   if (image.linear) {
     for (auto idx = (size_t)0; idx < image.pixels.size(); idx++) {
       result.pixels[idx] = tonemap(image.pixels[idx], exposure, filmic);
@@ -176,9 +180,12 @@ void tonemap_image(color_image& result, const color_image& image,
 // Apply tone mapping using multithreading for speed.
 void tonemap_image_mt(color_image& result, const color_image& image,
     float exposure, bool filmic) {
-  if (image.width != result.width || image.height != result.height)
-    throw std::invalid_argument{"image should be the same size"};
-  if (result.linear) throw std::invalid_argument{"ldr expected"};
+    if (image.width != result.width || image.height != result.height) {
+        assert(false); //throw std::invalid_argument{"image should be the same size"};
+    }
+    if (result.linear) {
+        assert(false); //throw std::invalid_argument{"ldr expected"};
+    }
   if (image.linear) {
     parallel_for_batch((size_t)image.width * (size_t)image.height,
         (size_t)image.width, [&result, &image, exposure, filmic](size_t idx) {
@@ -197,7 +204,7 @@ void tonemap_image_mt(color_image& result, const color_image& image,
 color_image resize_image(
     const color_image& image, int res_width, int res_height) {
   if (res_width == 0 && res_height == 0) {
-    throw std::invalid_argument{"bad image size in resize"};
+      assert(false); //throw std::invalid_argument{"bad image size in resize"};
   }
   if (res_height == 0) {
     res_height = (int)round(
@@ -220,12 +227,12 @@ color_image image_difference(
     const color_image& image1, const color_image& image2, bool display) {
   // check sizes
   if (image1.width != image2.width || image1.height != image2.height) {
-    throw std::invalid_argument{"image sizes are different"};
+      assert(false); //throw std::invalid_argument{"image sizes are different"};
   }
 
   // check types
   if (image1.linear != image2.linear) {
-    throw std::invalid_argument{"image types are different"};
+      assert(false); //throw std::invalid_argument{"image types are different"};
   }
 
   // compute diff
@@ -263,10 +270,12 @@ void get_region(color_image& region, const color_image& image, int x, int y,
 // Composite two images together.
 color_image composite_image(
     const color_image& image_a, const color_image& image_b) {
-  if (image_a.width != image_b.width || image_a.height != image_b.height)
-    throw std::invalid_argument{"image should be the same size"};
-  if (image_a.linear != image_b.linear)
-    throw std::invalid_argument{"image should be of the same type"};
+    if (image_a.width != image_b.width || image_a.height != image_b.height) {
+        assert(false); //throw std::invalid_argument{"image should be the same size"};
+    }
+    if (image_a.linear != image_b.linear) {
+        assert(false); //throw std::invalid_argument{"image should be of the same type"};
+    }
   auto result = make_image(image_a.width, image_a.height, image_a.linear);
   for (auto idx = (size_t)0; idx < result.pixels.size(); idx++) {
     result.pixels[idx] = composite(image_a.pixels[idx], image_b.pixels[idx]);
@@ -277,14 +286,18 @@ color_image composite_image(
 // Composite two images together.
 void composite_image(color_image& result, const color_image& image_a,
     const color_image& image_b) {
-  if (image_a.width != image_b.width || image_a.height != image_b.height)
-    throw std::invalid_argument{"image should be the same size"};
-  if (image_a.linear != image_b.linear)
-    throw std::invalid_argument{"image should be of the same type"};
-  if (image_a.width != result.width || image_a.height != result.height)
-    throw std::invalid_argument{"image should be the same size"};
-  if (image_a.linear != result.linear)
-    throw std::invalid_argument{"image should be of the same type"};
+    if (image_a.width != image_b.width || image_a.height != image_b.height) {
+        assert(false); //throw std::invalid_argument{"image should be the same size"};
+    }
+    if (image_a.linear != image_b.linear) {
+        assert(false); //throw std::invalid_argument{"image should be of the same type"};
+    }
+    if (image_a.width != result.width || image_a.height != result.height) {
+        assert(false); //throw std::invalid_argument{"image should be the same size"};
+    }
+    if (image_a.linear != result.linear) {
+        assert(false); //throw std::invalid_argument{"image should be of the same type"};
+    }
   for (auto idx = (size_t)0; idx < result.pixels.size(); idx++) {
     result.pixels[idx] = composite(image_a.pixels[idx], image_b.pixels[idx]);
   }
@@ -340,9 +353,12 @@ color_image colorgrade_image(
 // Uses multithreading for speed.
 void colorgrade_image(color_image& result, const color_image& image,
     const colorgrade_params& params) {
-  if (image.width != result.width || image.height != result.height)
-    throw std::invalid_argument{"image should be the same size"};
-  if (!!result.linear) throw std::invalid_argument{"non linear expected"};
+    if (image.width != result.width || image.height != result.height) {
+        assert(false); //throw std::invalid_argument{"image should be the same size"};
+    }
+    if (!!result.linear) {
+        assert(false); //throw std::invalid_argument{"non linear expected"};
+    }
   for (auto idx = (size_t)0; idx < image.pixels.size(); idx++) {
     result.pixels[idx] = colorgrade(image.pixels[idx], image.linear, params);
   }
@@ -352,9 +368,12 @@ void colorgrade_image(color_image& result, const color_image& image,
 // Uses multithreading for speed.
 void colorgrade_image_mt(color_image& result, const color_image& image,
     const colorgrade_params& params) {
-  if (image.width != result.width || image.height != result.height)
-    throw std::invalid_argument{"image should be the same size"};
-  if (!!result.linear) throw std::invalid_argument{"non linear expected"};
+    if (image.width != result.width || image.height != result.height) {
+        assert(false); //throw std::invalid_argument{"image should be the same size"};
+    }
+    if (!!result.linear) {
+        assert(false); //throw std::invalid_argument{"non linear expected"};
+    }
   parallel_for_batch((size_t)image.width * (size_t)image.height,
       (size_t)image.width, [&result, &image, &params](size_t idx) {
         result.pixels[idx] = colorgrade(
@@ -931,7 +950,7 @@ vec3f compute_white_balance(const vector<vec4f>& img) {
 void resize_image(vector<vec4f>& res, const vector<vec4f>& img, int width,
     int height, int res_width, int res_height) {
   if (res_width == 0 && res_height == 0) {
-    throw std::invalid_argument{"bad image size in resize"};
+      assert(false); //throw std::invalid_argument{"bad image size in resize"};
   }
   if (res_height == 0) {
     res_height = (int)round(res_width * (double)height / (double)width);
@@ -947,7 +966,7 @@ void resize_image(vector<vec4f>& res, const vector<vec4f>& img, int width,
 void resize_image(vector<vec4b>& res, const vector<vec4b>& img, int width,
     int height, int res_width, int res_height) {
   if (res_width == 0 && res_height == 0) {
-    throw std::invalid_argument{"bad image size in resize"};
+      assert(false); //throw std::invalid_argument{"bad image size in resize"};
   }
   if (res_height == 0) {
     res_height = (int)round(res_width * (double)height / (double)width);
@@ -963,8 +982,9 @@ void resize_image(vector<vec4b>& res, const vector<vec4b>& img, int width,
 
 void image_difference(vector<vec4f>& diff, const vector<vec4f>& a,
     const vector<vec4f>& b, bool display) {
-  if (a.size() != b.size())
-    throw std::invalid_argument{"image haev different sizes"};
+    if (a.size() != b.size()) {
+        assert(false); //throw std::invalid_argument{"image haev different sizes"};
+    }
   diff.resize(a.size());
   for (auto i = 0llu; i < diff.size(); i++) diff[i] = abs(a[i] - b[i]);
   if (display) {

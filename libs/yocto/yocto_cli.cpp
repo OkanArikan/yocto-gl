@@ -217,7 +217,7 @@ static void cli_to_json(
     } else if constexpr (std::is_same_v<T, bool>) {
       js = choices.at(value ? 1 : 0);
     } else {
-      throw std::runtime_error{"type not supported"};
+        assert(false); //throw std::runtime_error{"type not supported"};
     }
   } else {
     js = value;
@@ -269,7 +269,7 @@ static bool cli_from_json(
     } else if constexpr (std::is_same_v<T, bool>) {
       value = values == choices[0] ? false : true;
     } else {
-      throw std::runtime_error{"type not supported"};
+        assert(false); //throw std::runtime_error{"type not supported"};
     }
   } else {
     value = (T)js;
@@ -664,7 +664,7 @@ static bool arg_to_json(cli_json& js, const cli_json& schema,
         return false;
     }
   } else {
-    throw std::runtime_error("unsupported type");
+      assert(false); //throw std::runtime_error("unsupported type");
   }
   return true;
 }
@@ -888,11 +888,11 @@ static bool config_to_json(cli_json& js, string& error) {
     if (try_config) return true;
     return cli_error("missing configuration file " + config);
   }
-  try {
+  //try {
     cjs = cli_json::parse(fs);
-  } catch (...) {
-    return cli_error("error loading configuration " + config);
-  }
+  //} catch (...) {
+  //  return cli_error("error loading configuration " + config);
+  //}
 
   update_json_objects(cjs, js);
   js = cjs;

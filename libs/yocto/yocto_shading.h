@@ -492,7 +492,7 @@ inline vec3f sample_microfacet(float roughness, const vec3f& normal,
     auto local_halfway = Ne;
     return transform_direction(basis, local_halfway);
   } else {
-    throw std::invalid_argument{"not implemented yet"};
+      assert(false); //throw std::invalid_argument{"not implemented yet"};
   }
 }
 

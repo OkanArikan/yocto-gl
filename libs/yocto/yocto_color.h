@@ -709,11 +709,11 @@ inline color_space_params get_color_scape_params(color_space space) {
     case color_space::p3d60: return p3d60_params;
     case color_space::p3d65: return p3d65_params;
     case color_space::p3display: return p3display_params;
-    default: throw std::runtime_error{"should not have gotten here"};
+    default: assert(false); //throw std::runtime_error{"should not have gotten here"};
   }
 
   // return here to silence warnings
-  throw std::runtime_error{"should not have gotten here"};
+    assert(false); //throw std::runtime_error{"should not have gotten here"};
   return {};
 }
 
@@ -860,7 +860,7 @@ inline vec3f color_to_xyz(const vec3f& col, color_space from) {
         hlg_linear_to_display(rgb.z),
     };
   } else {
-    throw std::runtime_error{"should not have gotten here"};
+      assert(false); //throw std::runtime_error{"should not have gotten here"};
   }
   return space.rgb_to_xyz_mat * rgb;
 }
@@ -906,7 +906,7 @@ inline vec3f xyz_to_color(const vec3f& xyz, color_space to) {
         hlg_display_to_linear(rgb.z),
     };
   } else {
-    throw std::runtime_error{"should not have gotten here"};
+      assert(false); //throw std::runtime_error{"should not have gotten here"};
   }
   return rgb;
 }

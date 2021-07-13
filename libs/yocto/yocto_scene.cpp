@@ -637,8 +637,9 @@ scene_shape fvshape_to_shape(const scene_fvshape& fvshape, bool as_triangles) {
   return shape;
 }
 scene_fvshape shape_to_fvshape(const scene_shape& shape) {
-  if (!shape.points.empty() || !shape.lines.empty())
-    throw std::invalid_argument{"cannor convert shape"};
+    if (!shape.points.empty() || !shape.lines.empty()) {
+        assert(false); //throw std::invalid_argument{"cannor convert shape"};
+    }
   auto fvshape          = scene_fvshape{};
   fvshape.positions     = shape.positions;
   fvshape.normals       = shape.normals;
@@ -1197,8 +1198,9 @@ void tesselate_subdiv(
   }
 
   if (subdiv.displacement != 0 && subdiv.displacement_tex != invalidid) {
-    if (subdiv.texcoords.empty())
-      throw std::runtime_error("missing texture coordinates");
+      if (subdiv.texcoords.empty()) {
+          assert(false); //throw std::runtime_error("missing texture coordinates");
+      }
 
     // facevarying case
     auto offset = vector<float>(subdiv.positions.size(), 0);

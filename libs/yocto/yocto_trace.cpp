@@ -1171,7 +1171,7 @@ static sampler_func get_trace_sampler_func(const trace_params& params) {
     case trace_sampler_type::eyelightao: return trace_eyelightao;
     case trace_sampler_type::falsecolor: return trace_falsecolor;
     default: {
-      throw std::runtime_error("sampler unknown");
+        assert(false); //throw std::runtime_error("sampler unknown");
       return nullptr;
     }
   }
@@ -1187,7 +1187,7 @@ bool is_sampler_lit(const trace_params& params) {
     case trace_sampler_type::eyelight: return false;
     case trace_sampler_type::falsecolor: return false;
     default: {
-      throw std::runtime_error("sampler unknown");
+        assert(false); //throw std::runtime_error("sampler unknown");
       return false;
     }
   }
@@ -1337,11 +1337,12 @@ void trace_samples(trace_state& state, const scene_model& scene,
 // Check image type
 static void check_image(
     const color_image& image, int width, int height, bool linear) {
-  if (image.width != width || image.height != height)
-    throw std::invalid_argument{"image should have the same size"};
-  if (image.linear != linear)
-    throw std::invalid_argument{
-        linear ? "expected linear image" : "expected srgb image"};
+    if (image.width != width || image.height != height) {
+        assert(false); //throw std::invalid_argument{"image should have the same size"};
+    }
+    if (image.linear != linear) {
+        assert(false); //throw std::invalid_argument{linear ? "expected linear image" : "expected srgb image"};
+    }
 }
 
 // Get resulting render

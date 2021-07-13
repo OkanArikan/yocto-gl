@@ -114,7 +114,7 @@ vector<vec3f> quads_normals(
 void lines_tangents(vector<vec3f>& tangents, const vector<vec2i>& lines,
     const vector<vec3f>& positions) {
   if (tangents.size() != positions.size()) {
-    throw std::out_of_range("array should be the same length");
+      assert(false); //throw std::out_of_range("array should be the same length");
   }
   for (auto& tangent : tangents) tangent = zero3f;
   for (auto& l : lines) {
@@ -130,7 +130,7 @@ void lines_tangents(vector<vec3f>& tangents, const vector<vec2i>& lines,
 void triangles_normals(vector<vec3f>& normals, const vector<vec3i>& triangles,
     const vector<vec3f>& positions) {
   if (normals.size() != positions.size()) {
-    throw std::out_of_range("array should be the same length");
+      assert(false); //throw std::out_of_range("array should be the same length");
   }
   for (auto& normal : normals) normal = zero3f;
   for (auto& t : triangles) {
@@ -148,7 +148,7 @@ void triangles_normals(vector<vec3f>& normals, const vector<vec3i>& triangles,
 void quads_normals(vector<vec3f>& normals, const vector<vec4i>& quads,
     const vector<vec3f>& positions) {
   if (normals.size() != positions.size()) {
-    throw std::out_of_range("array should be the same length");
+      assert(false); //throw std::out_of_range("array should be the same length");
   }
   for (auto& normal : normals) normal = zero3f;
   for (auto& q : quads) {
@@ -240,7 +240,7 @@ void skin_vertices(vector<vec3f>& skinned_positions,
     const vector<vec4i>& joints, const vector<frame3f>& xforms) {
   if (skinned_positions.size() != positions.size() ||
       skinned_normals.size() != normals.size()) {
-    throw std::out_of_range("arrays should be the same size");
+      assert(false); //throw std::out_of_range("arrays should be the same size");
   }
   for (auto i = 0; i < positions.size(); i++) {
     skinned_positions[i] =
@@ -265,7 +265,7 @@ void skin_matrices(vector<vec3f>& skinned_positions,
     const vector<vec4i>& joints, const vector<mat4f>& xforms) {
   if (skinned_positions.size() != positions.size() ||
       skinned_normals.size() != normals.size()) {
-    throw std::out_of_range("arrays should be the same size");
+      assert(false); //throw std::out_of_range("arrays should be the same size");
   }
   for (auto i = 0; i < positions.size(); i++) {
     auto xform = xforms[joints[i].x] * weights[i].x +

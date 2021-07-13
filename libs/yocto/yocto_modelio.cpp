@@ -102,6 +102,7 @@ struct file_stream {
   bool   owned    = false;
 
   // move-only type
+    file_stream(const string &f, FILE *s, bool o) : filename(f), fs(s), owned(o) { }
   file_stream(const file_stream&) = delete;
   file_stream& operator=(const file_stream&) = delete;
   ~file_stream() {
@@ -121,7 +122,7 @@ static file_stream open_file(const string& filename, const string& mode) {
 #else
   auto fs = fopen(filename.c_str(), mode.c_str());
 #endif
-  return {filename, fs, true};
+  return file_stream(filename, fs, true);
 }
 
 // Close a file
@@ -292,14 +293,18 @@ inline void format_value(string& str, const mat4f& value) {
 // Foramt to file
 inline void format_values(string& str, const string& fmt) {
   auto pos = fmt.find("{}");
-  if (pos != string::npos) throw std::invalid_argument("bad format string");
+    if (pos != string::npos) {
+        assert(false); //throw std::invalid_argument("bad format string");
+    }
   str += fmt;
 }
 template <typename Arg, typename... Args>
 inline void format_values(
     string& str, const string& fmt, const Arg& arg, const Args&... args) {
   auto pos = fmt.find("{}");
-  if (pos == string::npos) throw std::invalid_argument("bad format string");
+    if (pos == string::npos) {
+        assert(false); //throw std::invalid_argument("bad format string");
+    }
   str += fmt.substr(0, pos);
   format_value(str, arg);
   format_values(str, fmt.substr(pos + 2), args...);
@@ -948,7 +953,7 @@ ply_property& get_property(
       if (prop.name == property) return prop;
     }
   }
-  throw std::runtime_error("property not found");
+    assert(false); //throw std::runtime_error("property not found");
 }
 const ply_property& get_property(
     const ply_model& ply, const string& element, const string& property) {
@@ -958,7 +963,7 @@ const ply_property& get_property(
       if (prop.name == property) return prop;
     }
   }
-  throw std::runtime_error("property not found");
+    assert(false); //throw std::runtime_error("property not found");
 }
 template <typename T, typename T1>
 inline bool convert_property(const vector<T1>& prop, vector<T>& values) {
@@ -981,7 +986,7 @@ inline bool convert_property(const ply_property& prop, vector<T>& values) {
     case ply_type::f64: return convert_property(prop.data_f64, values);
   }
   // return here to silence warnings
-  throw std::runtime_error{"should not have gotten here"};
+    assert(false); //throw std::runtime_error{"should not have gotten here"};
   return false;
 }
 bool get_value(const ply_model& ply, const string& element,
@@ -1223,7 +1228,7 @@ inline ply_property& add_property(ply_model& ply, const string& element_name,
     prop.is_list = is_list;
     return prop;
   }
-  throw std::invalid_argument{"should not have gotten here"};
+    assert(false); //throw std::invalid_argument{"should not have gotten here"};
 }
 template <typename T>
 inline vector<T> make_vector(const T* value, size_t count, int stride) {
@@ -3213,8 +3218,9 @@ inline bool get_pbrt_value(const pbrt_value& pbrt, vector<vec2f>& val) {
     }
     return true;
   } else if (pbrt.type == pbrt_type::real) {
-    if (pbrt.vector1f.empty() || (pbrt.vector1f.size() % 2) != 0)
-      throw std::runtime_error("bad pbrt type");
+      if (pbrt.vector1f.empty() || (pbrt.vector1f.size() % 2) != 0) {
+          assert(false); //throw std::runtime_error("bad pbrt type");
+      }
     val.resize(pbrt.vector1f.size() / 2);
     for (auto i = 0; i < val.size(); i++)
       val[i] = {pbrt.vector1f[i * 2 + 0], pbrt.vector1f[i * 2 + 1]};
@@ -3233,8 +3239,9 @@ inline bool get_pbrt_value(const pbrt_value& pbrt, vector<vec3f>& val) {
     }
     return true;
   } else if (pbrt.type == pbrt_type::real) {
-    if (pbrt.vector1f.empty() || (pbrt.vector1f.size() % 3) != 0)
-      throw std::invalid_argument{"expected float3 array"};
+      if (pbrt.vector1f.empty() || (pbrt.vector1f.size() % 3) != 0) {
+          assert(false); //throw std::invalid_argument{"expected float3 array"};
+      }
     val.resize(pbrt.vector1f.size() / 3);
     for (auto i = 0; i < val.size(); i++)
       val[i] = {pbrt.vector1f[i * 3 + 0], pbrt.vector1f[i * 3 + 1],
@@ -3259,8 +3266,9 @@ inline bool get_pbrt_value(const pbrt_value& pbrt, vector<int>& val) {
 }
 inline bool get_pbrt_value(const pbrt_value& pbrt, vector<vec3i>& val) {
   if (pbrt.type == pbrt_type::integer) {
-    if (pbrt.vector1i.empty() || (pbrt.vector1i.size() % 3) != 0)
-      throw std::invalid_argument{"expected int3 array"};
+      if (pbrt.vector1i.empty() || (pbrt.vector1i.size() % 3) != 0) {
+          assert(false); //throw std::invalid_argument{"expected int3 array"};
+      }
     val.resize(pbrt.vector1i.size() / 3);
     for (auto i = 0; i < val.size(); i++)
       val[i] = {pbrt.vector1i[i * 3 + 0], pbrt.vector1i[i * 3 + 1],

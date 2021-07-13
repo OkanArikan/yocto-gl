@@ -1734,7 +1734,9 @@ static surface_path::vertex step_from_point(const vector<vec3i>& triangles,
     auto face = triangle_fan[i];
     if (tag != -1 && tags[face] != tag) continue;
     auto edge = opposite_edge(vertex, triangles[face]);
-    if (edge == vec2i{-1, -1}) throw std::runtime_error("edge is {-1, -1}\n");
+      if (edge == vec2i{-1, -1}) {
+          assert(false); //throw std::runtime_error("edge is {-1, -1}\n");
+      }
 
     auto a = positions[vertex], b = positions[edge.x], c = positions[edge.y];
     auto left = c - a, right = b - a;
@@ -1790,7 +1792,9 @@ surface_path integrate_field(const vector<vec3i>& triangles,
 
   for (auto i = 0; i < num_steps; i++) {
     auto [old_edge, old_face, old_alpha] = lerps.back();
-    if (old_face == -1) throw std::runtime_error("programmer error");
+      if (old_face == -1) {
+          assert(false); //throw std::runtime_error("programmer error");
+      }
     auto point = (1 - old_alpha) * positions[old_edge.x] +
                  old_alpha * positions[old_edge.y];
 
@@ -1815,12 +1819,13 @@ surface_path integrate_field(const vector<vec3i>& triangles,
 
     auto front_idx = opposite_vertex(triangles[face], old_edge);
     if (front_idx == -1) {
-      throw std::runtime_error("programmer error");
+        assert(false); //throw std::runtime_error("programmer error");
       return {};
     }
 
-    if (old_alpha < 0 || old_alpha > 1)
-      throw std::runtime_error("programmer error");
+      if (old_alpha < 0 || old_alpha > 1) {
+          assert(false); //throw std::runtime_error("programmer error");
+      }
 
     auto& a = positions[old_edge.x];
     auto& b = positions[front_idx];
@@ -1839,7 +1844,7 @@ surface_path integrate_field(const vector<vec3i>& triangles,
     lerps.push_back({edge, face, x});
   }
 
-  throw std::runtime_error("integral path ended nowhere");
+    assert(false); //throw std::runtime_error("integral path ended nowhere");
   return surface_path{from, 0, lerps};
 }
 
@@ -1886,12 +1891,13 @@ surface_path integrate_field(const vector<vec3i>& triangles,
 
     int front_idx = opposite_vertex(triangles[face], old_edge);
     if (front_idx == -1) {
-      throw std::runtime_error("programmer error: front_idx is -1");
+        assert(false); //throw std::runtime_error("programmer error: front_idx is -1");
       break;
     }
 
-    if (old_alpha < 0 || old_alpha > 1)
-      throw std::runtime_error("programmer error");
+      if (old_alpha < 0 || old_alpha > 1) {
+          assert(false); //throw std::runtime_error("programmer error");
+      }
     if (old_alpha == 0 || old_alpha == 1) {
       int  vertex = old_alpha == 0 ? old_edge.x : old_edge.y;
       auto lerp   = step_from_point(
@@ -1917,7 +1923,7 @@ surface_path integrate_field(const vector<vec3i>& triangles,
       edge.x = front_idx;
     }
     if (opposite_vertex(triangles[face], edge) == -1) {
-      throw std::runtime_error("opposite vertex == -1");
+        assert(false); //throw std::runtime_error("opposite vertex == -1");
     }
 
     lerps.push_back({edge, face, x});
@@ -4618,8 +4624,7 @@ array<spline_polygon, 2> insert_bezier_point(const dual_geodesic_solver& solver,
     return lane_riesenfeld_insert(
         solver, triangles, positions, adjacencies, polygon, t, precision);
   } else {
-    throw de_casteljau_insert(
-        solver, triangles, positions, adjacencies, polygon, t);
+      assert(false); //throw de_casteljau_insert(solver, triangles, positions, adjacencies, polygon, t);
   }
 }
 
